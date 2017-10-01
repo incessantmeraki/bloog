@@ -9,7 +9,7 @@ var app = choo()
 app.use(store)
 app.route('/', layout(archiveView))
 app.route('/:page', layout(archiveView))
-app.route('/p/:id', layout(singleView))
+app.route('/p/:id/:title', layout(singleView))
 app.mount('body')
 
 function store (state, emitter) {
@@ -56,6 +56,7 @@ function archiveView (state, emit) {
 
 function singleView (state, emit) {
   var id = state.params.id
+  var title = state.params.title
   return postEl(id, state.posts[id].content)
 }
 
@@ -72,8 +73,9 @@ function postEl (id, content ) {
 
 function previewEl (id,title, content) {
   var article = html`<article></article>`
+  var titleLink = title.split(' ').join('-').slice(2).toLowerCase()
   article.innerHTML = nmd(title) + nmd(content)
-  article.appendChild(html`<p>${linkEl('/p/' + id, '🔗')}</p>`)
+  article.appendChild(html`<p>${linkEl('/p/' + id + '/' + titleLink, '🔗')}</p>`)
   return article
 }
 
