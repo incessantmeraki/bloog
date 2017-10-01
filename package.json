@@ -9,11 +9,17 @@
     "new": "touch posts/$(date +'%Y%m%d%H%M%S').md",
     "deploy": "npm run dist && surge dist --domain bloog.surge.sh"
   },
-  "keywords": ["choo", "markdown", "static", "blog"],
+  "keywords": [
+    "choo",
+    "markdown",
+    "static",
+    "blog"
+  ],
   "author": "Jon Gacnik <jon@folderstudio.com> (http://jongacnik.com)",
   "license": "MIT",
   "dependencies": {
     "choo": "^5.0.4",
+    "markdown-summary": "^1.0.3",
     "nano-markdown": "^1.2.0",
     "read-directory": "^2.0.0"
   },

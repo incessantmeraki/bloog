@@ -3,6 +3,7 @@ var choo = require('choo')
 var html = require('choo/html')
 var read = require('read-directory')
 var nmd = require('nano-markdown')
+var msum = require('markdown-summary')
 
 var app = choo()
 app.use(store)
@@ -13,7 +14,18 @@ app.mount('body')
 
 function store (state, emitter) {
   state.title = 'Bloog ✨'
-  state.posts = read.sync(path.join(__dirname, 'posts'))
+  state.posts = {}
+  var posts = read.sync(path.join(__dirname, 'posts'))
+
+  Object.keys(posts).forEach(function (k) {
+    state.posts[k] = {
+      title: msum.title(posts[k]),
+      content: posts[k],
+      summary: msum.summary(posts[k]),
+      image: msum.image(posts[k])
+    }
+  })
+
   state.ids = Object.keys(state.posts).sort().reverse()
   state.perPage = 5
   state.pages = Math.ceil(state.ids.length / state.perPage)
@@ -35,7 +47,7 @@ function archiveView (state, emit) {
   return html`
     <div>
       ${posts.map(function (id) {
-        return postEl(id, state.posts[id], true)
+        return previewEl(id,state.posts[id].title, state.posts[id].summary)
       })}
       ${prevNextEl(state)}
     </div>
@@ -44,7 +56,7 @@ function archiveView (state, emit) {
 
 function singleView (state, emit) {
   var id = state.params.id
-  return postEl(id, state.posts[id])
+  return postEl(id, state.posts[id].content)
 }
 
 function paginate (posts, page, perPage) {
@@ -52,12 +64,16 @@ function paginate (posts, page, perPage) {
   return posts.slice(perPage * (page - 1), page * perPage)
 }
 
-function postEl (id, content, permalink) {
+function postEl (id, content ) {
   var article = html`<article></article>`
   article.innerHTML = nmd(content)
-  if (permalink) {
-    article.appendChild(html`<p>${linkEl('/p/' + id, '🔗')}</p>`)
-  }
+  return article
+}
+
+function previewEl (id,title, content) {
+  var article = html`<article></article>`
+  article.innerHTML = nmd(title) + nmd(content)
+  article.appendChild(html`<p>${linkEl('/p/' + id, '🔗')}</p>`)
   return article
 }
 
