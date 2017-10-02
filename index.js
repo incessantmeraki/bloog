@@ -4,6 +4,10 @@ var html = require('choo/html')
 var read = require('read-directory')
 var nmd = require('nano-markdown')
 var msum = require('markdown-summary')
+var css = require('sheetify')
+
+css('tachyons')
+css('./markdown.css')
 
 var app = choo()
 app.use(store)
@@ -35,8 +39,8 @@ function layout (view) {
   return function (state, emit) {
     return html`
       <body>
-        <h1>${state.title}</h1>
-        ${view(state, emit)}
+         <a class="link dim black b f1 f-subheadline-ns tc db mb3 mb4-ns" href="/#" title="Home">incessantmeraki</a>
+				 ${view(state, emit)}
       </body>
     `
   }
@@ -45,11 +49,21 @@ function layout (view) {
 function archiveView (state, emit) {
   var posts = paginate(state.ids, state.params.page, state.perPage)
   return html`
-    <div>
-      ${posts.map(function (id) {
-        return previewEl(id,state.posts[id].title, state.posts[id].summary)
-      })}
-      ${prevNextEl(state)}
+		<div class="mw9 center ph3-ns">
+			<div class="cf ph2-ns">
+				<div class="fl w-100 w-75-ns pa2">
+					<div class="bg-white pv4">
+						${posts.map(function (id) {
+							return previewEl(id,state.posts[id].title, state.posts[id].summary)
+						})}
+						${prevNextEl(state)}
+					</div>
+				</div>
+				<div class="fl w-100 w-25-ns pa2">
+					<div class="bg-white pv4">
+					</div>
+				</div>
+			</div>
     </div>
   `
 }
@@ -66,7 +80,7 @@ function paginate (posts, page, perPage) {
 }
 
 function postEl (id, content ) {
-  var article = html`<article></article>`
+  var article = html`<article class="mw8 center markdown-body"></article>`
   article.innerHTML = nmd(content)
   return article
 }

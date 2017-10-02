@@ -4,7 +4,7 @@
   "description": "kinda static, choo markdown blog",
   "main": "index.js",
   "scripts": {
-    "start": "budo index.js -l -P -- -t read-directory/transform",
+    "start": "budo index.js -l -P -- -t read-directory/transform -t sheetify",
     "dist": "browserify -t read-directory/transform -t unassertify -g yo-yoify -g uglifyify index.js > dist/bundle.js",
     "new": "touch posts/$(date +'%Y%m%d%H%M%S').md",
     "deploy": "npm run dist && surge dist --domain bloog.surge.sh"
@@ -21,7 +21,9 @@
     "choo": "^5.0.4",
     "markdown-summary": "^1.0.3",
     "nano-markdown": "^1.2.0",
-    "read-directory": "^2.0.0"
+    "read-directory": "^2.0.0",
+    "sheetify": "^6.2.0",
+    "tachyons": "^4.8.1"
   },
   "devDependencies": {
     "browserify": "^14.1.0",
